@@ -5,6 +5,12 @@ import Link from "next/link";
 import { Project, api } from "@/lib/api";
 import HealthScore from "./HealthScore";
 
+const PERIOD_OPTIONS = [
+  { label: "Última semana", days: 7 },
+  { label: "Últimas 2 semanas", days: 14 },
+  { label: "Último mês", days: 30 },
+];
+
 interface ProjectCardProps {
   project: Project;
   onSynced: () => void;
@@ -14,6 +20,7 @@ interface ProjectCardProps {
 export default function ProjectCard({ project, onSynced, onDeleted }: ProjectCardProps) {
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState("");
+  const [selectedDays, setSelectedDays] = useState(7);
 
   const summary = project.latest_summary;
 
@@ -22,7 +29,7 @@ export default function ProjectCard({ project, onSynced, onDeleted }: ProjectCar
     setSyncing(true);
     setSyncMsg("");
     try {
-      await api.syncProject(project.id);
+      await api.syncProject(project.id, selectedDays);
       setSyncMsg("✓ Sincronizado!");
       onSynced();
       setTimeout(() => setSyncMsg(""), 3000);
@@ -75,25 +82,37 @@ export default function ProjectCard({ project, onSynced, onDeleted }: ProjectCar
           <p className="text-sm text-gray-400 italic mt-2">Nenhuma análise disponível ainda.</p>
         )}
 
-        <div className="flex gap-2 mt-4">
-          <button
-            onClick={handleSync}
-            disabled={syncing}
-            className="flex-1 bg-secondary hover:bg-teal-400 disabled:opacity-60 text-white text-xs font-medium py-2 px-3 rounded-md transition-colors"
+        <div className="mt-4" onClick={(e) => e.preventDefault()}>
+          <select
+            value={selectedDays}
+            onChange={(e) => setSelectedDays(Number(e.target.value))}
+            className="w-full border border-gray-200 rounded-md px-2 py-1.5 text-xs text-gray-600 mb-2 focus:outline-none focus:ring-1 focus:ring-secondary bg-white"
           >
-            {syncing ? "Sincronizando..." : "↻ Sincronizar"}
-          </button>
-          <button
-            onClick={handleDelete}
-            className="bg-red-50 hover:bg-red-100 text-red-500 text-xs font-medium py-2 px-3 rounded-md transition-colors"
-          >
-            Excluir
-          </button>
-        </div>
+            {PERIOD_OPTIONS.map((o) => (
+              <option key={o.days} value={o.days}>{o.label}</option>
+            ))}
+          </select>
 
-        {syncMsg && (
-          <p className="text-xs text-center mt-2 text-secondary font-medium">{syncMsg}</p>
-        )}
+          <div className="flex gap-2">
+            <button
+              onClick={handleSync}
+              disabled={syncing}
+              className="flex-1 bg-secondary hover:bg-teal-400 disabled:opacity-60 text-white text-xs font-medium py-2 px-3 rounded-md transition-colors"
+            >
+              {syncing ? "Sincronizando..." : "↻ Sincronizar"}
+            </button>
+            <button
+              onClick={handleDelete}
+              className="bg-red-50 hover:bg-red-100 text-red-500 text-xs font-medium py-2 px-3 rounded-md transition-colors"
+            >
+              Excluir
+            </button>
+          </div>
+
+          {syncMsg && (
+            <p className="text-xs text-center mt-2 text-secondary font-medium">{syncMsg}</p>
+          )}
+        </div>
       </div>
     </Link>
   );

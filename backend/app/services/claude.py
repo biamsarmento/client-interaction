@@ -25,7 +25,7 @@ def _build_history_block(messages: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def analyze_messages(project_name: str, messages: list[dict]) -> dict:
+def analyze_messages(project_name: str, messages: list[dict], days: int = 7) -> dict:
     """
     Envia o histórico de mensagens para o Claude e retorna o JSON estruturado de análise.
     """
@@ -40,13 +40,14 @@ def analyze_messages(project_name: str, messages: list[dict]) -> dict:
             "proximos_passos": ["Verificar se o grupo está ativo", "Entrar em contato com o cliente"],
         }
 
+    period_label = {7: "última semana", 14: "últimas duas semanas", 30: "último mês"}.get(days, f"últimos {days} dias")
     history = _build_history_block(messages)
 
     prompt = f"""Você é um Analista de Operações Sênior. Analise o histórico de mensagens de um grupo de projeto e retorne APENAS um JSON válido, sem texto adicional.
 
 Projeto: {project_name}
 
-Histórico de mensagens (última semana):
+Histórico de mensagens ({period_label}):
 {history}
 
 Retorne exatamente neste formato JSON:

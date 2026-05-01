@@ -84,6 +84,6 @@ export const api = {
   deleteProject: (id: number) =>
     request<void>(`/projects/${id}`, { method: "DELETE" }),
 
-  syncProject: (id: number) =>
-    request<{ message: string }>(`/projects/${id}/sync`, { method: "POST" }),
+  syncProject: (id: number, days: number = 7) =>
+    request<{ message: string }>(`/projects/${id}/sync?days=${days}`, { method: "POST" }),
 };

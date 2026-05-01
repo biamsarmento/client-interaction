@@ -6,9 +6,19 @@ interface SummaryPanelProps {
   isLatest?: boolean;
 }
 
+function getPeriodLabel(weekStart: string, weekEnd: string): string {
+  const days = Math.round(
+    (new Date(weekEnd).getTime() - new Date(weekStart).getTime()) / (1000 * 60 * 60 * 24)
+  );
+  if (days >= 28) return "Resumo do Mês";
+  if (days >= 12) return "Resumo das Últimas 2 Semanas";
+  return "Resumo da Semana";
+}
+
 export default function SummaryPanel({ summary, isLatest = false }: SummaryPanelProps) {
   const weekStart = new Date(summary.week_start).toLocaleDateString("pt-BR");
   const weekEnd = new Date(summary.week_end).toLocaleDateString("pt-BR");
+  const periodLabel = getPeriodLabel(summary.week_start, summary.week_end);
 
   return (
     <div
@@ -42,7 +52,7 @@ export default function SummaryPanel({ summary, isLatest = false }: SummaryPanel
       </div>
 
       <div className="mb-4">
-        <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-1">Resumo da Semana</p>
+        <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-1">{periodLabel}</p>
         <p className="text-sm text-gray-600 leading-relaxed">{summary.summary_text}</p>
       </div>
 

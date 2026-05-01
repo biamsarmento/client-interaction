@@ -15,6 +15,13 @@ export default function ProjectDetailPage() {
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState("");
   const [showHistory, setShowHistory] = useState(false);
+  const [selectedDays, setSelectedDays] = useState(7);
+
+  const PERIOD_OPTIONS = [
+    { label: "Última semana", days: 7 },
+    { label: "Últimas 2 semanas", days: 14 },
+    { label: "Último mês", days: 30 },
+  ];
 
   async function loadProject() {
     try {
@@ -35,7 +42,7 @@ export default function ProjectDetailPage() {
     setSyncing(true);
     setSyncMsg("");
     try {
-      await api.syncProject(Number(id));
+      await api.syncProject(Number(id), selectedDays);
       await loadProject();
       setSyncMsg("✓ Sincronizado com sucesso!");
       setTimeout(() => setSyncMsg(""), 4000);
@@ -84,13 +91,24 @@ export default function ProjectDetailPage() {
               </p>
             )}
           </div>
-          <button
-            onClick={handleSync}
-            disabled={syncing}
-            className="bg-secondary hover:bg-teal-400 disabled:opacity-60 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors whitespace-nowrap"
-          >
-            {syncing ? "Sincronizando..." : "↻ Sincronizar Agora"}
-          </button>
+          <div className="flex items-center gap-2">
+            <select
+              value={selectedDays}
+              onChange={(e) => setSelectedDays(Number(e.target.value))}
+              className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-secondary bg-white"
+            >
+              {PERIOD_OPTIONS.map((o) => (
+                <option key={o.days} value={o.days}>{o.label}</option>
+              ))}
+            </select>
+            <button
+              onClick={handleSync}
+              disabled={syncing}
+              className="bg-secondary hover:bg-teal-400 disabled:opacity-60 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors whitespace-nowrap"
+            >
+              {syncing ? "Sincronizando..." : "↻ Sincronizar"}
+            </button>
+          </div>
         </div>
 
         {syncMsg && (
