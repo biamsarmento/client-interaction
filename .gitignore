@@ -1,0 +1,27 @@
+# Ambiente
+.env
+*.env.local
+
+# Sessão Telegram (dados sensíveis)
+*.session
+*.session-journal
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Banco de dados
+*.db
+*.sqlite3
+
+# Node
+node_modules/
+.next/
+frontend/.next/
+
+# Geral
+.DS_Store
