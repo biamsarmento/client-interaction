@@ -1,8 +1,11 @@
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 import anthropic
+
+SP_TZ = ZoneInfo("America/Sao_Paulo")
 
 _client = None
 
@@ -14,11 +17,17 @@ def _get_client() -> anthropic.Anthropic:
     return _client
 
 
+def _to_sp(dt: datetime) -> datetime:
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(SP_TZ)
+
+
 def _build_history_block(messages: list[dict]) -> str:
     lines = []
     for msg in messages:
         if isinstance(msg["sent_at"], datetime):
-            ts = msg["sent_at"].strftime("%d/%m/%Y %H:%M")
+            ts = _to_sp(msg["sent_at"]).strftime("%d/%m/%Y %H:%M")
         else:
             ts = str(msg["sent_at"])
         lines.append(f"[{msg['sender_name']}] [{ts}]: {msg['content']}")

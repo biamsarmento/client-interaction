@@ -1,5 +1,6 @@
 import { WeeklySummary } from "@/lib/api";
 import HealthScore from "./HealthScore";
+import { formatDate } from "@/lib/date";
 
 interface SummaryPanelProps {
   summary: WeeklySummary;
@@ -16,8 +17,8 @@ function getPeriodLabel(weekStart: string, weekEnd: string): string {
 }
 
 export default function SummaryPanel({ summary, isLatest = false }: SummaryPanelProps) {
-  const weekStart = new Date(summary.week_start).toLocaleDateString("pt-BR");
-  const weekEnd = new Date(summary.week_end).toLocaleDateString("pt-BR");
+  const weekStart = formatDate(summary.week_start);
+  const weekEnd = formatDate(summary.week_end);
   const periodLabel = getPeriodLabel(summary.week_start, summary.week_end);
 
   return (

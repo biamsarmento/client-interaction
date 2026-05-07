@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import { api, ProjectDetail, WeeklySummary } from "@/lib/api";
 import Navbar from "@/components/Navbar";
+import { formatDate, formatShortDate } from "@/lib/date";
 
 function getPeriodLabel(weekStart: string, weekEnd: string): string {
   const days = Math.round(
@@ -81,7 +82,7 @@ export default function HistoryPage() {
   );
 
   const chartData = sorted.map((s) => ({
-    label: new Date(s.week_end).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }),
+    label: formatShortDate(s.week_end),
     score: s.score_health,
     color: s.status_color,
     alert: s.alert_critical,
@@ -206,8 +207,7 @@ export default function HistoryPage() {
                               {getPeriodLabel(s.week_start, s.week_end)}
                             </span>
                             <span className="text-xs text-gray-400">
-                              {new Date(s.week_start).toLocaleDateString("pt-BR")} →{" "}
-                              {new Date(s.week_end).toLocaleDateString("pt-BR")}
+                              {formatDate(s.week_start)} → {formatDate(s.week_end)}
                             </span>
                             {i === 0 && (
                               <span className="text-xs bg-secondary text-white px-2 py-0.5 rounded-full font-medium">
