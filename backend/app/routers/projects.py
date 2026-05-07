@@ -101,7 +101,6 @@ def get_project(project_id: int, db: Session = Depends(get_db), _=Depends(auth.g
         db.query(models.WeeklySummary)
         .filter(models.WeeklySummary.project_id == project_id)
         .order_by(models.WeeklySummary.created_at.desc())
-        .limit(10)
         .all()
     )
 

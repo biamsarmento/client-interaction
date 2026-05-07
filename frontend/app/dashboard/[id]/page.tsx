@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { api, ProjectDetail } from "@/lib/api";
 import Navbar from "@/components/Navbar";
 import SummaryPanel from "@/components/SummaryPanel";
@@ -75,12 +76,20 @@ export default function ProjectDetailPage() {
       <Navbar />
 
       <main className="max-w-3xl mx-auto px-6 py-8">
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="text-secondary text-sm font-medium mb-6 hover:underline flex items-center gap-1"
-        >
-          ← Voltar para projetos
-        </button>
+        <div className="flex items-center justify-between mb-6">
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="text-secondary text-sm font-medium hover:underline flex items-center gap-1"
+          >
+            ← Voltar para projetos
+          </button>
+          <Link
+            href={`/dashboard/${id}/history`}
+            className="text-sm font-medium text-primary border border-primary/30 hover:bg-bg-card px-4 py-2 rounded-lg transition-colors"
+          >
+            📈 Ver Histórico
+          </Link>
+        </div>
 
         <div className="flex items-start justify-between mb-6">
           <div>
