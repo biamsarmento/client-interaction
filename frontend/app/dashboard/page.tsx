@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { api, Project } from "@/lib/api";
 import Navbar from "@/components/Navbar";
 import ProjectCard from "@/components/ProjectCard";
+import ScoreOverview from "@/components/ScoreOverview";
 
 export default function DashboardPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -130,6 +131,8 @@ export default function DashboardPage() {
             </div>
           </form>
         )}
+
+        {!loading && <ScoreOverview projects={projects} />}
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
